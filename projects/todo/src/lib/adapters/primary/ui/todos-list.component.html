@@ -1,0 +1,31 @@
+<div *ngVar="todos$ | async as todos">
+    <ng-container *ngIf="(!todos || todos.length < 1) && !isItemBeingAdded; else list">
+        <h2>Get a clear view of the day ahead</h2>
+        <p>All your tasks that are due today will show up here.</p>
+        <button (click)="isItemBeingAdded = true">Add task</button>
+    </ng-container>
+
+    <ng-template #list>
+        <section class="todos-list" *ngIf="todos">
+            <ul>
+                <li *ngFor="let item of todos">
+                    <label>
+                        <input type="checkbox" [checked]="item.completed" (change)="toggleItem(item.id, $event.target.checked)">
+                        <span [ngClass]="{'strikethrough': item.completed}">{{ item.content }}</span>
+                    </label>
+                </li>
+            </ul>
+        </section>
+        
+        <section class="actions">
+            <button *ngIf="!isItemBeingAdded; else addTodoForm" (click)="isItemBeingAdded = true">Add task</button>
+            <ng-template #addTodoForm>
+                <form [formGroup]="newTodoForm">
+                    <input type="text" formControlName="content" placeholder="Write your message here">
+                    <button (click)="onTaskAdded()">Add task</button>
+                    <button (click)="isItemBeingAdded = false">Cancel</button>
+                </form>
+            </ng-template>
+        </section>
+    </ng-template>
+</div>
